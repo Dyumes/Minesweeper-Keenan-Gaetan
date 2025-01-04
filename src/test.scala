@@ -15,7 +15,7 @@ object Minesweeper extends App {
 
   val graphics = new FunGraphics(width, height, "MineSweeper")
 
-  class Cell(var isMine: Boolean = false, var isRevealed: Boolean = false, var nbrMine: Int = 0) {
+  class Cell(var isMine: Boolean = false, var isRevealed: Boolean = false, var nbrMine: Int = 0, var isFlagged: Boolean = false) {
     def reveal(): Unit = {
       isRevealed = true
     }
@@ -24,13 +24,23 @@ object Minesweeper extends App {
       isMine = true
     }
 
-    def getDisplayValue(): String = {
-      if (isRevealed) {
-        if (isMine) "X" else nbrMine.toString // test, X for mine, 1 for normal cell
-      } else {
-        "?" // if cell's not revealed
+    def toggleFlag(): Unit = {
+      if (!isRevealed) {
+        isFlagged = !isFlagged
       }
     }
+
+    def getDisplayValue(): String = {
+      if (isFlagged) {
+        "F" // Flag
+      } else if (isRevealed) {
+        if (isMine) "X" else nbrMine.toString
+      } else {
+        " "
+      }
+    }
+
+
   }
 
 
@@ -129,22 +139,44 @@ object Minesweeper extends App {
       val col = mouseX / sizeCell
 
       // is click in grid limits ?
-      if (row >= 0 && row < rows && col >= 0 && col < cols) {
-        if (isFirstClick == true){
-          grid(row)(col).nbrMine = 0
-          isFirstClick = false
-        }
-        if (grid(row)(col).isRevealed == false) {
-          if (grid(row)(col).isMine) {
-            grid(row)(col).reveal()
-            println("BOOM! Mine cliquée!")
-          } else {
-            revealAdjacent(row, col)
+      if (e.getButton == MouseEvent.BUTTON1) {
+
+          if (row >= 0 && row < rows && col >= 0 && col < cols) {
+          if (isFirstClick == true){
+            grid(row)(col).nbrMine = 0
+            isFirstClick = false
+          }
+          if (grid(row)(col).isRevealed == false) {
+            if (grid(row)(col).isMine) {
+              grid(row)(col).reveal()
+              println("BOOM! Mine cliquée!")
+            } else {
+              revealAdjacent(row, col)
+            }
           }
         }
-      drawGrid() // new render
+        /*var win = false
+        for (i <- 0 to rows - 1; j <- 0 to cols - 1){
+          if (grid(i)(j).isRevealed && grid(i)(j).nbrMine > 0){
+            win = true
+          }else if (grid(i)(j).nbrMine > 0 && grid(i)(j).isRevealed == false){
+            win = false
+          }
+        }
+        if (win == true){
+          println("gagné")
+        }
+        */
+
+      } else if (e.getButton == MouseEvent.BUTTON3){
+        grid(row)(col).toggleFlag()
+      }
+
+      drawGrid()// new render
     }
-    }
+
+
+
   }
 
   )
