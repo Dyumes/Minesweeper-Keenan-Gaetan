@@ -9,6 +9,6 @@
 
 -Génération aléatoire si on peut // 100%
 
-- Loop/Victoire/Défaite // 0%
+-Loop/Victoire/Défaite // 0%
 
 -Graphisme (end game) // 0%
