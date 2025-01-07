@@ -1,12 +1,14 @@
 # minesweeper-Keenan-Gaetan Tasklist
--Grille fonctionnelle
+-Grille fonctionnelle // 100%
 
--Progression d'état (quand on appuie)
+-Progression d'état (quand on appuie) // 100%
 
--Logique des bombes + nombres // FAIT
+-Logique des bombes + nombres // 100%
 
--Cases cachées
+-Cases cachées // 100%
 
--Génération aléatoire si on peut // 50%
+-Génération aléatoire si on peut // 100%
 
--Graphisme (end game)
+- Loop/Victoire/Défaite // 0%
+
+-Graphisme (end game) // 0%
