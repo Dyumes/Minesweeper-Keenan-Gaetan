@@ -131,7 +131,7 @@ object Minesweeper extends App {
       val mouseX = e.getX
       val mouseY = e.getY
 
-      // coordinates to grid index
+      // coordinates to grid index.
       val row = mouseY / sizeCell
       val col = mouseX / sizeCell
 
