@@ -1,6 +1,6 @@
 import hevs.graphics.FunGraphics
 
-import java.awt.event.{MouseAdapter, MouseEvent}
+import java.awt.event.{KeyEvent, KeyListener, MouseAdapter, MouseEvent}
 import scala.util.Random
 import java.awt.{Color, Font}
 
@@ -10,10 +10,12 @@ object Minesweeper extends App {
     val sizeCell = 50
     val rows = 10
     val cols = 10
-    val offsetX = 200
-    val offsetY = 200
-    val width = cols * sizeCell + offsetX
-    val height = rows * sizeCell + offsetY
+
+    val width = 1400
+    val height = 900
+
+    val offsetX = width / 2 - (cols * sizeCell / 2)
+    val offsetY = height / 2 - (rows * sizeCell / 2)
 
     val graphics = new FunGraphics(width, height, "MineSweeper")
 
@@ -103,8 +105,8 @@ object Minesweeper extends App {
       graphics.clear()
       val font = new Font("Arial", Font.PLAIN, 24)
       for (row <- 0 until rows; col <- 0 until cols) {
-        val x = col * sizeCell + (offsetX / 2)
-        val y = row * sizeCell + (offsetY / 2)
+        val x = col * sizeCell + offsetX
+        val y = row * sizeCell + offsetY
 
 
         val displayValue = grid(row)(col).getDisplayValue()
@@ -161,8 +163,8 @@ object Minesweeper extends App {
     graphics.addMouseListener(new MouseAdapter() {
       override def mouseClicked(e: MouseEvent): Unit = {
         // coordinates of mouse
-        val mouseX = e.getX - offsetX / 2
-        val mouseY = e.getY - offsetY / 2
+        val mouseX = e.getX - offsetX
+        val mouseY = e.getY - offsetY
 
         // coordinates to grid index.
         val row = mouseY / sizeCell
@@ -216,6 +218,24 @@ object Minesweeper extends App {
       }
     }
     )
+
+  graphics.setKeyManager(new KeyListener {
+    override def keyPressed(e: KeyEvent): Unit = {
+      e.getKeyCode match {
+        case KeyEvent.VK_M => drawMenu() // Press 'M' key
+        case _ => println(s"Key pressed: ${e.getKeyChar}")
+        }
+      }
+      override def keyReleased(e: KeyEvent): Unit = {
+
+      }
+      override def keyTyped(e: KeyEvent): Unit = {
+
+      }
+    }
+    )
+
+
 
     spawnMines()
 
