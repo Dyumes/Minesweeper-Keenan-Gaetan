@@ -20,9 +20,6 @@ object Minesweeper extends App {
       isRevealed = true
     }
 
-    def setMine(): Unit = {
-      isMine = true
-    }
 
     def toggleFlag(): Unit = {
       if (!isRevealed) {
@@ -69,21 +66,21 @@ object Minesweeper extends App {
 
   def countMines(): Unit ={
 
-      for (row <- 0 until rows; col <- 0 until cols) {
-        var counter = 0
-        if (grid(row)(col).isMine == false) {
-          for (i <- -1 to 1; j <- -1 to 1) {
-            val newRow = row + i
-            val newCol = col + j
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-              if (grid(newRow)(newCol).isMine == true) {
-                counter += 1
-              }
+    for (row <- 0 until rows; col <- 0 until cols) {
+      var counter = 0
+      if (grid(row)(col).isMine == false) {
+        for (i <- -1 to 1; j <- -1 to 1) {
+          val newRow = row + i
+          val newCol = col + j
+          if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+            if (grid(newRow)(newCol).isMine == true) {
+              counter += 1
             }
           }
-          grid(row)(col).nbrMine = counter
         }
+        grid(row)(col).nbrMine = counter
       }
+    }
 
   }
 
@@ -99,7 +96,7 @@ object Minesweeper extends App {
 
       val displayValue = grid(row)(col).getDisplayValue()
 
-      // Dessiner la bordure de chaque cellule
+      // draw every cell's borders
       graphics.setColor(Color.BLACK)
       graphics.drawRect(x, y, sizeCell, sizeCell)
 
@@ -113,7 +110,7 @@ object Minesweeper extends App {
     // verify if cell is in grid limits
     if (row < 0 || row >= rows || col < 0 || col >= cols || grid(row)(col).isRevealed) return
 
-    // Révèle la cellule
+    // reveal cell
     grid(row)(col).reveal()
 
     // if no mines, explore further
@@ -141,8 +138,8 @@ object Minesweeper extends App {
       // is click in grid limits ?
       if (e.getButton == MouseEvent.BUTTON1) {
 
-          if (row >= 0 && row < rows && col >= 0 && col < cols) {
-          if (isFirstClick == true){
+        if (row >= 0 && row < rows && col >= 0 && col < cols) {
+          if (isFirstClick == true) {
             grid(row)(col).nbrMine = 0
             isFirstClick = false
           }
@@ -155,29 +152,32 @@ object Minesweeper extends App {
             }
           }
         }
-        /*var win = false
-        for (i <- 0 to rows - 1; j <- 0 to cols - 1){
-          if (grid(i)(j).isRevealed && grid(i)(j).nbrMine > 0){
-            win = true
-          }else if (grid(i)(j).nbrMine > 0 && grid(i)(j).isRevealed == false){
-            win = false
+
+        // Wining
+        /*
+        var counterWin: Int = 0
+        for (i <- 0 to rows - 1; j <- 0 to cols - 1) {
+          if (grid(i)(j).isRevealed && grid(i)(j).nbrMine > 0) {
+            counterWin += 1
           }
-        }
-        if (win == true){
-          println("gagné")
+          if (counterWin >= rows * cols - 20 - 1) {
+            println("gagné")
+          }
         }
         */
 
-      } else if (e.getButton == MouseEvent.BUTTON3){
+
+
+      }else if (e.getButton == MouseEvent.BUTTON3) {
         grid(row)(col).toggleFlag()
+
       }
 
-      drawGrid()// new render
+      drawGrid() // new render
+
     }
-
-
-
   }
+
 
   )
 
@@ -188,6 +188,7 @@ object Minesweeper extends App {
   drawGrid()
 
   println()
+
   for (row <- 0 until rows) {
     for (col <- 0 until cols) {
       val cell = grid(row)(col)
