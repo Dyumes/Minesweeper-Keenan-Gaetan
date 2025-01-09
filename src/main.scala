@@ -14,8 +14,8 @@ import menu.drawLevelMenu
 object main extends App {
   //def Game(): Unit = {
     var sizeCell = 40
-    var rows = 5
-    var cols = 5
+    var rows = 16
+    var cols = 16
 
     val width = 1400
     val height = 900
@@ -59,7 +59,7 @@ object main extends App {
       grid(row)(col) = new Cell()
     }
 
-    var nbrMines = 1
+    var nbrMines = 50
 
     def spawnMines(): Unit = {
       println("POSITIONS MINES----------------")
@@ -190,8 +190,8 @@ object main extends App {
                   println("BOOM! Mine cliquée! -> Lost")
                   lost()
                   Thread.sleep(3000)
-                  menu.drawMenu()
                   isMenuOpen = true
+                  menu.drawMenu()
                   return
 
                 } else {
@@ -217,8 +217,8 @@ object main extends App {
               Thread.sleep(1000)
               win()
               Thread.sleep(3000)
-              menu.drawMenu()
               isMenuOpen = true
+              menu.drawMenu()
               return
             }
           }
@@ -233,8 +233,9 @@ object main extends App {
       override def keyPressed(e: KeyEvent): Unit = {
         e.getKeyCode match {
           case KeyEvent.VK_M =>
-            menu.drawMenu() // Press 'M' key to return to menu
             isMenuOpen = true
+            menu.drawMenu() // Press 'M' key to return to menu
+
           case KeyEvent.VK_R =>
           case _ => println(s"Key pressed: ${e.getKeyChar}")
         }
@@ -273,6 +274,17 @@ object main extends App {
       }
       println()
     }
+
+  def startNewGame(): Unit = {
+
+
+
+    spawnMines()
+    countMines()
+
+
+    drawGrid()
+  }
 
 
   //}

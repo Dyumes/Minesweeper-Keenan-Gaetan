@@ -1,4 +1,4 @@
-import main.{cols, drawGrid, graphics, grid, height, isFirstClick, isMenuOpen, lost, nbrMines, offsetX, offsetY, revealAdjacent, rows, sizeCell, width, win}
+import main.{cols, drawGrid, graphics, grid, height, isFirstClick, isMenuOpen, lost, nbrMines, offsetX, offsetY, revealAdjacent, rows, sizeCell, startNewGame, width, win}
 
 import java.awt.event.{MouseAdapter, MouseEvent}
 import java.awt.{Color, Font, Rectangle}
@@ -43,7 +43,7 @@ object menu extends App {
                 rows = 9
                 cols = 9
                 sizeCell = 50
-                drawGrid()
+                startNewGame()
               }
               if (mouseY >= 425 && mouseY <= 485) {
                 println("medium")
@@ -52,6 +52,7 @@ object menu extends App {
                 rows = 12
                 cols = 12
                 sizeCell = 40
+                startNewGame()
               }
               if (mouseY >= 575 && mouseY <= 635) {
                 println("hard")
@@ -60,6 +61,7 @@ object menu extends App {
                 rows = 16
                 cols = 16
                 sizeCell = 40
+                startNewGame()
               }
             }
           }
