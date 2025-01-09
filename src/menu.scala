@@ -43,7 +43,8 @@ object menu extends App {
                 rows = 9
                 cols = 9
                 sizeCell = 50
-                startNewGame()
+                nbrMines = 13
+                startNewGame(rows, cols, sizeCell, nbrMines)
               }
               if (mouseY >= 425 && mouseY <= 485) {
                 println("medium")
@@ -52,7 +53,8 @@ object menu extends App {
                 rows = 12
                 cols = 12
                 sizeCell = 40
-                startNewGame()
+                nbrMines = 23
+                startNewGame(rows, cols, sizeCell, nbrMines)
               }
               if (mouseY >= 575 && mouseY <= 635) {
                 println("hard")
@@ -61,13 +63,11 @@ object menu extends App {
                 rows = 16
                 cols = 16
                 sizeCell = 40
-                startNewGame()
+                nbrMines = 40
+                startNewGame(rows, cols, sizeCell, nbrMines)
               }
             }
           }
-
-        } else if (e.getButton == MouseEvent.BUTTON3) {
-
         }
       }
     }

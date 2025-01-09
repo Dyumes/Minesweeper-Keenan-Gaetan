@@ -20,8 +20,8 @@ object main extends App {
     val width = 1400
     val height = 900
 
-    val offsetX = width / 2 - (cols * sizeCell / 2)
-    val offsetY = height / 2 - (rows * sizeCell / 2)
+    var offsetX = width / 2 - (cols * sizeCell / 2)
+    var offsetY = height / 2 - (rows * sizeCell / 2)
 
     val graphics = new FunGraphics(width, height, "MineSweeper")
 
@@ -53,7 +53,7 @@ object main extends App {
     }
 
 
-    val grid: Array[Array[Cell]] = Array.ofDim[Cell](rows, cols) // Array of cells
+    var grid: Array[Array[Cell]] = Array.ofDim[Cell](rows, cols) // Array of cells
 
     for (row <- 0 until rows; col <- 0 until cols) { //initialization
       grid(row)(col) = new Cell()
@@ -180,9 +180,18 @@ object main extends App {
 
             if (row >= 0 && row < rows && col >= 0 && col < cols) {
               if (isFirstClick == true) {
-                grid(row)(col).nbrMine = 0
                 grid(row)(col).isMine = false
                 isFirstClick = false
+                spawnMines()
+                grid(row)(col).nbrMine = 0 // A REVOIR
+                countMines()
+                for (row <- 0 until rows) {
+                  for (col <- 0 until cols) {
+                    val cell = grid(row)(col)
+                    print(s"${if (cell.isMine) "X" else cell.nbrMine} ")
+                  }
+                  println()
+                }
               }
               if (grid(row)(col).isRevealed == false) {
                 if (grid(row)(col).isMine) {
@@ -251,21 +260,44 @@ object main extends App {
     }
     )
 
-
-
       drawGrid()
-
-      spawnMines()
-
-      countMines()
-
+      //spawnMines()
+      //countMines()
       drawGrid()
-
 
       println()
 
 
 
+/*
+    for (row <- 0 until rows) {
+      for (col <- 0 until cols) {
+        val cell = grid(row)(col)
+        print(s"${if (cell.isMine) "X" else cell.nbrMine} ")
+      }
+      println()
+    }
+*/
+  def startNewGame(newRows: Int, newCols: Int, newSizeCell: Int, newNbrMines: Int): Unit = {
+    grid = Array.ofDim[Cell](newRows, newCols) // Array of cells
+
+    for (row <- 0 until rows; col <- 0 until cols) { //initialization
+      grid(row)(col) = new Cell()
+    }
+
+    sizeCell = newSizeCell
+    nbrMines = newNbrMines
+
+    isFirstClick = true
+
+    offsetX = width / 2 - (cols * sizeCell / 2)
+    offsetY = height / 2 - (rows * sizeCell / 2)
+
+    spawnMines()
+    countMines()
+
+
+    drawGrid()
 
     for (row <- 0 until rows) {
       for (col <- 0 until cols) {
@@ -274,16 +306,6 @@ object main extends App {
       }
       println()
     }
-
-  def startNewGame(): Unit = {
-
-
-
-    spawnMines()
-    countMines()
-
-
-    drawGrid()
   }
 
 
