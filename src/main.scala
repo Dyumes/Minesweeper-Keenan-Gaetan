@@ -2,17 +2,11 @@ import hevs.graphics.FunGraphics
 
 import java.awt.event.{KeyEvent, KeyListener, MouseAdapter, MouseEvent}
 import scala.util.Random
-import java.awt.{Color, Font}
-
-import menu.drawMenu
-import menu.drawLevelMenu
-
-
+import java.awt.{Color, Font, Rectangle}
 
 
 
 object main extends App {
-  //def Game(): Unit = {
     var sizeCell = 40
     var rows = 16
     var cols = 16
@@ -22,6 +16,8 @@ object main extends App {
 
     var offsetX = width / 2 - (cols * sizeCell / 2)
     var offsetY = height / 2 - (rows * sizeCell / 2)
+
+    var nbrFlag = 0
 
     val graphics = new FunGraphics(width, height, "MineSweeper")
 
@@ -127,6 +123,18 @@ object main extends App {
         // draw the value of cell
         graphics.setColor(Color.BLACK)
         graphics.drawString(x + sizeCell / 2, y + sizeCell / 2, displayValue, font, Color.BLACK, 0, 0)
+
+        val fontSection = new Font("Arial", Font.PLAIN, 32)
+
+        if (nbrFlag >= 0) {
+          graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
+            s"Flags: ${nbrFlag.toString}", fontSection, Color.BLACK, 0, 0)
+        } else if (nbrFlag < 0){
+          graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
+            s"Flags: ${nbrFlag.toString}", fontSection, Color.RED, 0, 0)
+        }
+        var rNbrFlag = new Rectangle(width / 2 - 100, height / 2 - rows * sizeCell / 2 - sizeCell - 30, 200, 60)
+        graphics.drawRect(rNbrFlag)
       }
     }
 
@@ -212,7 +220,11 @@ object main extends App {
 
           } else if (e.getButton == MouseEvent.BUTTON3) {
             grid(row)(col).toggleFlag()
-
+            if (grid(row)(col).isFlagged == true){
+              nbrFlag -= 1
+            } else if (grid(row)(col).isFlagged == false){
+              nbrFlag += 1
+            }
           }
 
           drawGrid() // new render
@@ -241,11 +253,13 @@ object main extends App {
     graphics.setKeyManager(new KeyListener {
       override def keyPressed(e: KeyEvent): Unit = {
         e.getKeyCode match {
-          case KeyEvent.VK_M =>
+          case KeyEvent.VK_M => // 'M' key to return to menu
             isMenuOpen = true
-            menu.drawMenu() // Press 'M' key to return to menu
-
-          case KeyEvent.VK_R =>
+            menu.drawMenu()
+          case KeyEvent.VK_R => // 'R' key to restart a game in the same difficulty as selected
+            startNewGame(rows, cols, sizeCell, nbrMines)
+          case KeyEvent.VK_ESCAPE => // exit the game
+            System.exit(0)
           case _ => println(s"Key pressed: ${e.getKeyChar}")
         }
       }
@@ -260,30 +274,20 @@ object main extends App {
     }
     )
 
-      drawGrid()
-      //spawnMines()
-      //countMines()
-      drawGrid()
+      isMenuOpen = true
+      menu.drawMenu()
 
       println()
 
 
 
-/*
-    for (row <- 0 until rows) {
-      for (col <- 0 until cols) {
-        val cell = grid(row)(col)
-        print(s"${if (cell.isMine) "X" else cell.nbrMine} ")
-      }
-      println()
-    }
-*/
   def startNewGame(newRows: Int, newCols: Int, newSizeCell: Int, newNbrMines: Int): Unit = {
     grid = Array.ofDim[Cell](newRows, newCols) // Array of cells
 
     for (row <- 0 until rows; col <- 0 until cols) { //initialization
       grid(row)(col) = new Cell()
     }
+    nbrFlag = nbrMines
 
     sizeCell = newSizeCell
     nbrMines = newNbrMines
@@ -296,8 +300,8 @@ object main extends App {
     spawnMines()
     countMines()
 
-
     drawGrid()
+
 
     for (row <- 0 until rows) {
       for (col <- 0 until cols) {
@@ -307,9 +311,6 @@ object main extends App {
       println()
     }
   }
-
-
-  //}
 }
 
 

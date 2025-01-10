@@ -17,9 +17,11 @@ object menu extends App {
     var rEasy = new Rectangle(560, 275, 280, 60)
     var rMedium = new Rectangle(560, 425, 280, 60)
     var rHard = new Rectangle(560, 575, 280, 60)
+    var rHome = new Rectangle(105, 275, 140, 60)
     graphics.drawRect(rEasy)
     graphics.drawRect(rMedium)
     graphics.drawRect(rHard)
+    graphics.drawRect(rHome)
 
     var playMenu = true
     graphics.addMouseListener(new MouseAdapter() {
@@ -35,6 +37,12 @@ object menu extends App {
         if (e.getButton == MouseEvent.BUTTON1) {
           println(s"$mouseX:$mouseY")
           if (playMenu == true) {
+            if (mouseX >= 105 && mouseX <= 245 && mouseY >= 275 && mouseY <= 335){
+              println("return to menu")
+              isMenuOpen = true
+              playMenu = false
+              drawMenu()
+            }
             if (mouseX >= 560 && mouseX <= 840) {
               if (mouseY >= 275 && mouseY <= 335) {
                 println("easy")
@@ -119,6 +127,7 @@ object menu extends App {
                 }
                 if (mouseY >= 575 && mouseY <= 635) {
                   println("exit")
+                  System.exit(0)
                 }
 
               }
