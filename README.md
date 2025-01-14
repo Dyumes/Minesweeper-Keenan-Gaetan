@@ -11,6 +11,6 @@
 
 -Loop/Victoire/Défaite // 100%
 
--Menu/touche // 10%
+-Menu/touche // 100%
 
 -Graphisme (end game) // 0%
