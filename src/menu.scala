@@ -8,23 +8,16 @@ object menu extends App {
 
   def drawLevelMenu() ={
 
-    val fontTitle = new Font("Arial", Font.PLAIN, 48)
     val fontSection = new Font("Arial", Font.PLAIN, 32)
+
     graphics.clear()
-    graphics.setColor(Color.BLACK)
-    graphics.drawString(width / 2, height / 8, "Minesweeper", fontTitle, Color.BLACK, 0, 0)
-    graphics.drawString(width / 2, height / 3, "EASY", fontSection, Color.BLACK, 0, 0)
-    graphics.drawString(width / 2, height / 2, "MEDIUM", fontSection, Color.BLACK, 0, 0)
-    graphics.drawString(width / 2, height / 6 + height / 2, "HARD", fontSection, Color.BLACK, 0, 0)
+
+    graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/grid/background.png")
+    graphics.drawTransformedPicture(width/2, height / 8, 0.0, 1, "/res/menus/Title.png")
+    graphics.drawTransformedPicture(width / 2, height / 3, 0.0, 1, "/res/menus/easy.png")
+    graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/menus/medium.png")
+    graphics.drawTransformedPicture(width / 2, height / 6 + height / 2, 0.0, 1, "/res/menus/hard.png")
     graphics.drawString(width / 8, height / 3, "Menu", fontSection, Color.BLACK, 0, 0)
-    var rEasy = new Rectangle(560, 275, 280, 60)
-    var rMedium = new Rectangle(560, 425, 280, 60)
-    var rHard = new Rectangle(560, 575, 280, 60)
-    var rHome = new Rectangle(105, 275, 140, 60)
-    graphics.drawRect(rEasy)
-    graphics.drawRect(rMedium)
-    graphics.drawRect(rHard)
-    graphics.drawRect(rHome)
 
     var playMenu = true
     graphics.addMouseListener(new MouseAdapter() {
@@ -38,13 +31,14 @@ object menu extends App {
 
         // clicks IN MENU
         if (e.getButton == MouseEvent.BUTTON1) {
-          println(s"$mouseX:$mouseY")
           if (playMenu == true) {
             if (mouseX >= 105 && mouseX <= 245 && mouseY >= 275 && mouseY <= 335){
               println("return to menu")
               isMenuOpen = true
               playMenu = false
-              drawMenu()
+              graphics.frontBuffer.synchronized{
+                drawMenu()
+              }
             }
             if (mouseX >= 560 && mouseX <= 840) {
               if (mouseY >= 275 && mouseY <= 335) {
@@ -88,23 +82,12 @@ object menu extends App {
   def drawMenu(): Unit = {
     if (isMenuOpen == true) {
       graphics.clear()
-      val fontTitle = new Font("Arial", Font.PLAIN, 48)
-      val fontSection = new Font("Arial", Font.PLAIN, 32)
-      graphics.setColor(Color.BLACK)
-      //graphics.drawString(width / 2, height / 8, "Minesweeper", fontTitle, Color.BLACK, 0, 0)
+
+      graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/grid/background.png")
       graphics.drawTransformedPicture(width/2, height / 8, 0.0, 1, "/res/menus/Title.png")
-      //graphics.drawString(width / 2, height / 3, "PLAY", fontSection, Color.BLACK, 0, 0)
       graphics.drawTransformedPicture(width / 2, height / 3, 0.0, 1, "/res/menus/play.png")
-      //graphics.drawString(width / 2, height / 2, "SETTINGS", fontSection, Color.BLACK, 0, 0)
       graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/menus/settings.png")
-      //graphics.drawString(width / 2, height / 6 + height / 2, "EXIT", fontSection, Color.BLACK, 0, 0)
       graphics.drawTransformedPicture(width / 2, height / 6 + height / 2, 0.0, 1, "/res/menus/exit.png")
-      var rPlay = new Rectangle(560, 275, 280, 60)
-      var rSettings = new Rectangle(560, 425, 280, 60)
-      var rExit = new Rectangle(560, 575, 280, 60)
-      graphics.drawRect(rPlay)
-      graphics.drawRect(rSettings)
-      graphics.drawRect(rExit)
 
       var playMenu = false
 
@@ -126,7 +109,9 @@ object menu extends App {
                 if (mouseY >= 275 && mouseY <= 335) {
                   println("play")
                   playMenu = true
-                  drawLevelMenu()
+                  graphics.frontBuffer.synchronized{
+                    drawLevelMenu()
+                  }
                 }
 
                 if (mouseY >= 425 && mouseY <= 485) {

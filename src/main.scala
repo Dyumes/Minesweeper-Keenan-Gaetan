@@ -25,6 +25,9 @@ object main extends App {
 
     val graphics = new FunGraphics(width, height, "MineSweeper")
 
+    graphics.syncGameLogic(60)
+    graphics.displayFPS(true)
+
     var isMenuOpen = false
 
     class Cell(var isMine: Boolean = false, var isRevealed: Boolean = false, var nbrMine: Int = 0, var isFlagged: Boolean = false) {
@@ -107,11 +110,12 @@ object main extends App {
 
     }
 
-
     // Draw the grid
     def drawGrid(): Unit = {
       graphics.clear()
-      val font = new Font("Arial", Font.PLAIN, 24)
+
+      graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/grid/background.png")
+
       for (row <- 0 until rows; col <- 0 until cols) {
         val x = col * sizeCell + offsetX
         val y = row * sizeCell + offsetY
@@ -121,10 +125,27 @@ object main extends App {
 
         // draw every cell's borders
         graphics.setColor(Color.BLACK)
+
+        // draw border of the cell and background when unrevealed
         graphics.drawRect(x, y, sizeCell, sizeCell)
-
-
-        //graphics.drawTransformedPicture(x + sizeCell/2, y + sizeCell/2, 0.0, 1, "/res/redcrosstest.png") // for easy mode
+        if (grid(row)(col).isRevealed == false) {
+          if ((row + col) % 2 > 0) {
+            graphics.setColor(new Color(93,163, 113))
+            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+          } else {
+            graphics.setColor(new Color(48,83, 58))
+            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+          }
+        }
+        if (grid(row)(col).isRevealed == true) {
+          if ((row + col) % 2 > 0) {
+            graphics.setColor(new Color(220,220,220))
+            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+          } else {
+            graphics.setColor(new Color(200,200,200))
+            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+          }
+        }
 
 
         // draw the value of cell
@@ -133,17 +154,18 @@ object main extends App {
 
         if (grid(row)(col).isRevealed == true && grid(row)(col).isMine == false) {
           grid(row)(col).nbrMine match {
-            case 0 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/0test.png") // for easy mode
-            case 1 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/1test.png") // for easy mode
-            case 2 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/2test.png") // for easy mode
-            case 3 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/3test.png") // for easy mode
-            case 4 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/4test.png") // for easy mode
-            case 5 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/5test.png") // for easy mode
-            case 6 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/6test.png") // for easy mode
-            case _ => println("out of images")
+            case 1 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/1.png") // for easy mode
+            case 2 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/2.png") // for easy mode
+            case 3 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/3.png") // for easy mode
+            case 4 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/4.png") // for easy mode
+            case 5 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/5.png") // for easy mode
+            case 6 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/6.png") // for easy mode
+            case 7 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/7.png") // for easy mode
+            case 8 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/8.png") // for easy mode
+            case _ =>
           }
         } else if (grid(row)(col).isFlagged == true){
-          graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/testflag.png")
+          graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/flag.png")
         }
 
 
@@ -164,6 +186,8 @@ object main extends App {
         graphics.drawRect(rNbrFlag)
       }
     }
+
+
 
 
     def lost(): Unit = {
@@ -253,6 +277,9 @@ object main extends App {
                 } else {
                   revealAdjacent(row, col)
                 }
+                //drawGrid()
+                graphics.frontBuffer.synchronized()
+
               }
 
             }
@@ -268,16 +295,25 @@ object main extends App {
               }
             }
           }
+          graphics.frontBuffer.synchronized{
+            drawGrid() // new render
+          }
 
-          drawGrid() // new render
 
           var counterWin: Int = 0
           for (i <- 0 to rows - 1; j <- 0 to cols - 1) {
             if (grid(i)(j).isRevealed && grid(i)(j).nbrMine >= 0) {
               counterWin += 1
-            }
+
+
             if (counterWin >= rows * cols - nbrMines) {
               Thread.sleep(1000)
+              /*for (row <- 0 to rows - 1; col <- 0 to cols - 1){
+                grid(row)(col).isFlagged = false
+                grid(row)(col).reveal()
+                Thread.sleep(100)
+                drawGrid()
+                */
               win()
               Thread.sleep(3000)
               isMenuOpen = true
@@ -286,7 +322,7 @@ object main extends App {
             }
           }
         }
-      }
+      }}
     }
     )
 
@@ -346,7 +382,9 @@ object main extends App {
     //spawnMines()
     //countMines()
 
-    drawGrid()
+    graphics.frontBuffer.synchronized{
+      drawGrid()
+    }
 
 
     for (row <- 0 until rows) {
