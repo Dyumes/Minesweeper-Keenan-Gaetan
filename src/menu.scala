@@ -2,9 +2,12 @@ import main.{cols, drawGrid, graphics, grid, height, isFirstClick, isMenuOpen, l
 
 import java.awt.event.{MouseAdapter, MouseEvent}
 import java.awt.{Color, Font, Rectangle}
+import java.nio.file.{Files, Paths}
 
 object menu extends App {
+
   def drawLevelMenu() ={
+
     val fontTitle = new Font("Arial", Font.PLAIN, 48)
     val fontSection = new Font("Arial", Font.PLAIN, 32)
     graphics.clear()
@@ -88,10 +91,14 @@ object menu extends App {
       val fontTitle = new Font("Arial", Font.PLAIN, 48)
       val fontSection = new Font("Arial", Font.PLAIN, 32)
       graphics.setColor(Color.BLACK)
-      graphics.drawString(width / 2, height / 8, "Minesweeper", fontTitle, Color.BLACK, 0, 0)
-      graphics.drawString(width / 2, height / 3, "PLAY", fontSection, Color.BLACK, 0, 0)
-      graphics.drawString(width / 2, height / 2, "SETTINGS", fontSection, Color.BLACK, 0, 0)
-      graphics.drawString(width / 2, height / 6 + height / 2, "EXIT", fontSection, Color.BLACK, 0, 0)
+      //graphics.drawString(width / 2, height / 8, "Minesweeper", fontTitle, Color.BLACK, 0, 0)
+      graphics.drawTransformedPicture(width/2, height / 8, 0.0, 1, "/res/menus/Title.png")
+      //graphics.drawString(width / 2, height / 3, "PLAY", fontSection, Color.BLACK, 0, 0)
+      graphics.drawTransformedPicture(width / 2, height / 3, 0.0, 1, "/res/menus/play.png")
+      //graphics.drawString(width / 2, height / 2, "SETTINGS", fontSection, Color.BLACK, 0, 0)
+      graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/menus/settings.png")
+      //graphics.drawString(width / 2, height / 6 + height / 2, "EXIT", fontSection, Color.BLACK, 0, 0)
+      graphics.drawTransformedPicture(width / 2, height / 6 + height / 2, 0.0, 1, "/res/menus/exit.png")
       var rPlay = new Rectangle(560, 275, 280, 60)
       var rSettings = new Rectangle(560, 425, 280, 60)
       var rExit = new Rectangle(560, 575, 280, 60)
