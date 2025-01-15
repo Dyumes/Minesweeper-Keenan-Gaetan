@@ -1,13 +1,13 @@
-## Table of content
-* Description
-* How to play
-* Hellsweeper mode
-* Screenshots
-* Code
+## [Table of content]
+- [Description](#description)
+- [Hellsweeper](#hellsweeper)
+- [Screenshots](#screenshots)
+- [Guide](#guide)
+- [Code](#code)
 
 ---
 
-## Description
+## [Description]
 <p align="center">
   <img src="https://files.catbox.moe/im4hbd.png" alt="Title ISC" style="max-width:100%;">
 </p>
@@ -16,7 +16,7 @@
 
 ---
 
-## Hellsweeper
+## [Hellsweeper]
 ***"Attention Helldivers! The enemies of Managed Democracy have planted mines inside of our territory. It is your duty to bring Freedom and Peace once more inside of our soil. For Super Earth!"***
 
 <p align="center">
@@ -31,11 +31,11 @@
 
 ---
 
-## Screenshots
+## [Screenshots]
 
 ---
 
-## How to play
+## [Guide]
 
 Once you have selected one of the three difficulty available, the game will generate a board with hidden squares. Your goal is to find and flag all the hidden mines without clicking on one. **`Left-click`** on a square reveals either a number or a blank space. Numbers tell you how many mines are in the eight squares surrounding the one you just clicked. To mark a mine, **`Right-click`** to place a flag. Use the numbers to figure out where the mines are and clear all the safe squares. If you clear every safe square and flag all the mines correctly, you win! Avoid guessing and use logic to solve the puzzle.
 
@@ -43,7 +43,7 @@ If you find yourself stuck or wishing to change the current setting, you can pre
 
 ---
 
-## Code
+## [Code]
 
 ### 1. Initialization and configuration
 
