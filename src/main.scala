@@ -1,12 +1,12 @@
-import hevs.graphics.utils.GraphicsBitmap
-import hevs.graphics.{FunGraphics, ImageGraphics}
-import menu.drawMenu
+
+import hevs.graphics.FunGraphics
+
 
 import java.awt.event.{KeyEvent, KeyListener, MouseAdapter, MouseEvent}
 import scala.util.Random
 import java.awt.{Color, Font, Rectangle}
-import javax.swing.ImageIcon
-import java.awt.Image
+
+
 
 
 
@@ -21,11 +21,11 @@ object main extends App {
     var offsetX = width / 2 - (cols * sizeCell / 2)
     var offsetY = height / 2 - (rows * sizeCell / 2)
 
-    var nbrFlag = 0
+    private var nbrFlag = 0
 
     val graphics = new FunGraphics(width, height, "MineSweeper")
 
-    graphics.syncGameLogic(60)
+    //graphics.syncGameLogic(60)
     graphics.displayFPS(true)
 
     var isMenuOpen = false
@@ -42,7 +42,7 @@ object main extends App {
         }
       }
 
-      def getDisplayValue(): String = {
+      /*def getDisplayValue(): String = {
         if (isFlagged) {
           "F" // Flag
         } else if (isRevealed) {
@@ -51,6 +51,8 @@ object main extends App {
           " "
         }
       }
+      */
+
 
 
     }
@@ -64,19 +66,19 @@ object main extends App {
 
     var nbrMines = 0
 
-    def spawnMines(): Unit = {
+    private def spawnMines(): Unit = {
       println("POSITIONS MINES----------------")
       for (mine <- 0 until nbrMines) {
         var posX = Random.nextInt(cols)
         var posY = Random.nextInt(rows)
         var cellOccupied = true
 
-        while (cellOccupied == true) {
-          if (grid(posX)(posY).isMine == true && grid(posX)(posY).nbrMine == 0 && grid(posX)(posY).isRevealed == false) {
+        while (cellOccupied) {
+          if (grid(posX)(posY).isMine && grid(posX)(posY).nbrMine == 0 && !grid(posX)(posY).isRevealed) {
             cellOccupied = true
             posX = Random.nextInt(rows)
             posY = Random.nextInt(cols)
-          } else if (grid(posX)(posY).isMine == false && grid(posX)(posY).nbrMine == 0 && grid(posX)(posY).isRevealed == false) {
+          } else if (!grid(posX)(posY).isMine && grid(posX)(posY).nbrMine == 0 && !grid(posX)(posY).isRevealed) {
             cellOccupied = false
 
           }
@@ -90,16 +92,16 @@ object main extends App {
     }
 
 
-    def countMines(): Unit = {
+    private def countMines(): Unit = {
 
       for (row <- 0 until rows; col <- 0 until cols) {
         var counter = 0
-        if (grid(row)(col).isMine == false) {
+        if (!grid(row)(col).isMine) {
           for (i <- -1 to 1; j <- -1 to 1) {
             val newRow = row + i
             val newCol = col + j
             if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-              if (grid(newRow)(newCol).isMine == true) {
+              if (grid(newRow)(newCol).isMine) {
                 counter += 1
               }
             }
@@ -115,6 +117,7 @@ object main extends App {
       graphics.clear()
 
       graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/grid/background.png")
+      graphics.drawTransformedPicture(width / 2 + width / 3 , height / 2, 0.0, 1, "/res/grid/controls.png")
 
       for (row <- 0 until rows; col <- 0 until cols) {
         val x = col * sizeCell + offsetX
@@ -124,11 +127,11 @@ object main extends App {
         //val displayValue = grid(row)(col).getDisplayValue()
 
         // draw every cell's borders
-        graphics.setColor(Color.BLACK)
+
 
         // draw border of the cell and background when unrevealed
-        graphics.drawRect(x, y, sizeCell, sizeCell)
-        if (grid(row)(col).isRevealed == false) {
+
+        if (!grid(row)(col).isRevealed) {
           if ((row + col) % 2 > 0) {
             graphics.setColor(new Color(93,163, 113))
             graphics.drawFillRect(x, y, sizeCell, sizeCell)
@@ -137,7 +140,7 @@ object main extends App {
             graphics.drawFillRect(x, y, sizeCell, sizeCell)
           }
         }
-        if (grid(row)(col).isRevealed == true) {
+        if (grid(row)(col).isRevealed) {
           if ((row + col) % 2 > 0) {
             graphics.setColor(new Color(220,220,220))
             graphics.drawFillRect(x, y, sizeCell, sizeCell)
@@ -147,43 +150,38 @@ object main extends App {
           }
         }
 
-
-        // draw the value of cell
-        //graphics.setColor(Color.BLACK)
-        //graphics.drawString(x + sizeCell / 2, y + sizeCell / 2, displayValue, font, Color.BLACK, 0, 0)
-
-        if (grid(row)(col).isRevealed == true && grid(row)(col).isMine == false) {
+        var xImage = x + sizeCell / 2
+        var yImage = y + sizeCell / 2
+        if (grid(row)(col).isRevealed && !grid(row)(col).isMine) {
           grid(row)(col).nbrMine match {
-            case 1 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/1.png") // for easy mode
-            case 2 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/2.png") // for easy mode
-            case 3 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/3.png") // for easy mode
-            case 4 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/4.png") // for easy mode
-            case 5 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/5.png") // for easy mode
-            case 6 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/6.png") // for easy mode
-            case 7 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/7.png") // for easy mode
-            case 8 => graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, sizeCell/50, "/res/grid/8.png") // for easy mode
+            case 1 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(1))
+            case 2 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(2))
+            case 3 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(3))
+            case 4 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(4))
+            case 5 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(5))
+            case 6 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(6))
+            case 7 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(7))
+            case 8 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(8))
             case _ =>
           }
-        } else if (grid(row)(col).isFlagged == true){
-          graphics.drawTransformedPicture(x + sizeCell / 2, y + sizeCell / 2, 0.0, 1, "/res/grid/flag.png")
+        } else if (grid(row)(col).isFlagged){
+          graphics.drawTransformedPicture(xImage, yImage, 0.0, 1, images.GridImages(0))
         }
 
 
         val fontSection = new Font("Arial", Font.PLAIN, 32)
 
-        graphics.drawString(width / 8, height / 3, "Menu", fontSection, Color.BLACK, 0, 0)
-        var rHome = new Rectangle(105, 275, 140, 60)
-        graphics.drawRect(rHome)
+        graphics.drawTransformedPicture(width / 2 - width / 10, height / 2 - rows * sizeCell / 2 - sizeCell, 0.0, 1, images.GridImages(0))
 
         if (nbrFlag >= 0) {
           graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
-            s"Flags: ${nbrFlag.toString}", fontSection, Color.BLACK, 0, 0)
+            s"${nbrFlag.toString}", fontSection, Color.BLACK, 0, 0)
         } else if (nbrFlag < 0){
           graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
-            s"Flags: ${nbrFlag.toString}", fontSection, Color.RED, 0, 0)
+            s"${nbrFlag.toString}", fontSection, Color.RED, 0, 0)
         }
-        var rNbrFlag = new Rectangle(width / 2 - 100, height / 2 - rows * sizeCell / 2 - sizeCell - 30, 200, 60)
-        graphics.drawRect(rNbrFlag)
+        //val rNbrFlag = new Rectangle(width / 2 - 100, height / 2 - rows * sizeCell / 2 - sizeCell - 30, 200, 60)
+        //graphics.drawRect(rNbrFlag)
       }
     }
 
@@ -191,15 +189,34 @@ object main extends App {
 
 
     def lost(): Unit = {
-      graphics.clear()
       val font = new Font("Arial", Font.PLAIN, 56)
-      graphics.drawString(width / 2, height / 2, "BIG CHEH", font, Color.BLACK, 0, 0)
+      var counter = 0
+      while (counter != 9){
+        counter += 1
+        graphics.drawString(width / 2, height / 2, "LOST", font, Color.RED, 0, 0)
+        Thread.sleep(150)
+        graphics.frontBuffer.synchronized{
+          drawGrid()
+        }
+        Thread.sleep(150)
+      }
+
     }
 
     def win(): Unit = {
-      graphics.clear()
       val font = new Font("Arial", Font.PLAIN, 56)
-      graphics.drawString(width / 2, height / 2, "BRAVO", font, Color.BLACK, 0, 0)
+      var counter = 0
+      while (counter != 9){
+        counter += 1
+        graphics.drawString(width / 2, height / 2, "WIN", font, Color.green, 0, 0)
+        Thread.sleep(150)
+        graphics.frontBuffer.synchronized{
+          drawGrid()
+        }
+        Thread.sleep(150)
+      }
+
+
     }
 
     def revealAdjacent(row: Int, col: Int): Unit = {
@@ -219,7 +236,7 @@ object main extends App {
       }
     }
 
-    def clearFirstClickArea(row: Int, col: Int): Unit = {
+    private def clearFirstClickArea(row: Int, col: Int): Unit = {
       var compteur = 0
       for (i <- -1 to 1; j <- -1 to 1) { // Check neighboring cells
         val newRow = row + i
@@ -247,10 +264,10 @@ object main extends App {
         val col = mouseX / sizeCell
 
         // clicks IN GAME
-        if (isMenuOpen == false) {
+        if (!isMenuOpen) {
           if (e.getButton == MouseEvent.BUTTON1) {
             if (row >= 0 && row < rows && col >= 0 && col < cols) {
-              if (isFirstClick == true && grid(row)(col).isFlagged == false) {
+              if (isFirstClick && !grid(row)(col).isFlagged) {
                 isFirstClick = false
                 spawnMines()
                 clearFirstClickArea(row, col)
@@ -264,14 +281,15 @@ object main extends App {
                   println()
                 }
               }
-              if (grid(row)(col).isRevealed == false && grid(row)(col).isFlagged == false) {
+              if (!grid(row)(col).isRevealed && !grid(row)(col).isFlagged) {
                 if (grid(row)(col).isMine) {
                   grid(row)(col).reveal()
                   println("BOOM! Mine cliquée! -> Lost")
                   lost()
-                  Thread.sleep(3000)
                   isMenuOpen = true
-                  menu.drawMenu()
+                  graphics.frontBuffer.synchronized{
+                   menu.drawMenu()
+                  }
                   return
 
                 } else {
@@ -286,11 +304,11 @@ object main extends App {
 
 
           } else if (e.getButton == MouseEvent.BUTTON3) {
-            if (isFirstClick == false && grid(row)(col).isRevealed == false) {
+            if (!isFirstClick && !grid(row)(col).isRevealed) {
               grid(row)(col).toggleFlag()
-              if (grid(row)(col).isFlagged == true) {
+              if (grid(row)(col).isFlagged) {
                 nbrFlag -= 1
-              } else if (grid(row)(col).isFlagged == false) {
+              } else if (!grid(row)(col).isFlagged) {
                 nbrFlag += 1
               }
             }
@@ -301,23 +319,17 @@ object main extends App {
 
 
           var counterWin: Int = 0
-          for (i <- 0 to rows - 1; j <- 0 to cols - 1) {
+          for (i <- 0 until rows; j <- 0 until cols) {
             if (grid(i)(j).isRevealed && grid(i)(j).nbrMine >= 0) {
               counterWin += 1
 
 
             if (counterWin >= rows * cols - nbrMines) {
-              Thread.sleep(1000)
-              /*for (row <- 0 to rows - 1; col <- 0 to cols - 1){
-                grid(row)(col).isFlagged = false
-                grid(row)(col).reveal()
-                Thread.sleep(100)
-                drawGrid()
-                */
               win()
-              Thread.sleep(3000)
               isMenuOpen = true
-              menu.drawMenu()
+              graphics.frontBuffer.synchronized {
+                menu.drawMenu()
+              }
               return
             }
           }
@@ -333,7 +345,10 @@ object main extends App {
         e.getKeyCode match {
           case KeyEvent.VK_M => // 'M' key to return to menu
             isMenuOpen = true
-            menu.drawMenu()
+            graphics.clear()
+            graphics.frontBuffer.synchronized{
+              menu.drawMenu()
+            }
           case KeyEvent.VK_R => // 'R' key to restart a game in the same difficulty as selected
             startNewGame(rows, cols, sizeCell, nbrMines)
           case KeyEvent.VK_ESCAPE => // exit the game
@@ -353,7 +368,9 @@ object main extends App {
     )
 
       isMenuOpen = true
-      menu.drawMenu()
+      graphics.frontBuffer.synchronized{
+        menu.drawMenu()
+      }
 
       println()
 
@@ -379,9 +396,6 @@ object main extends App {
     offsetX = width / 2 - (cols * sizeCell / 2)
     offsetY = height / 2 - (rows * sizeCell / 2)
 
-    //spawnMines()
-    //countMines()
-
     graphics.frontBuffer.synchronized{
       drawGrid()
     }
@@ -393,6 +407,14 @@ object main extends App {
         print(s"${if (cell.isMine) "X" else cell.nbrMine} ")
       }
       println()
+    }
+  }
+
+  while (true) {
+    if (!isMenuOpen) {
+      graphics.frontBuffer.synchronized{
+        drawGrid()
+      }
     }
   }
 }
