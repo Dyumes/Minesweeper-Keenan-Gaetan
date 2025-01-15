@@ -329,7 +329,6 @@ object main extends App {
                 } else {
                   revealAdjacent(row, col)
                 }
-                graphics.frontBuffer.synchronized()
 
               }
 
@@ -434,8 +433,6 @@ object main extends App {
   graphics.frontBuffer.synchronized{
     menu.drawMenu()
   }
-  //gameSong.play()
-
 
   while (true) {
     if (!isMenuOpen) {
