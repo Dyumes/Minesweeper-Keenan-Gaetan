@@ -1,7 +1,6 @@
 
 import hevs.graphics.FunGraphics
 
-
 import java.awt.event.{KeyEvent, KeyListener, MouseAdapter, MouseEvent}
 import scala.util.Random
 import java.awt.{Color, Font, Rectangle}
@@ -11,6 +10,11 @@ import java.awt.{Color, Font, Rectangle}
 
 
 object main extends App {
+  // Sounds initialization
+    val gameHellmode = new Audio("/res/sounds/test.wav")
+    val gameSong = new Audio("/res/sounds/MinesweeperSong.wav")
+    val buttonSound = new Audio("res/sounds/Button.wav")
+
     var sizeCell = 40
     var rows = 16
     var cols = 16
@@ -29,7 +33,7 @@ object main extends App {
     graphics.displayFPS(true)
 
     var isMenuOpen = false
-
+    var settingsMenu = false
     class Cell(var isMine: Boolean = false, var isRevealed: Boolean = false, var nbrMine: Int = 0, var isFlagged: Boolean = false) {
       def reveal(): Unit = {
         isRevealed = true
@@ -41,20 +45,6 @@ object main extends App {
           isFlagged = !isFlagged
         }
       }
-
-      /*def getDisplayValue(): String = {
-        if (isFlagged) {
-          "F" // Flag
-        } else if (isRevealed) {
-          if (isMine) "X" else nbrMine.toString
-        } else {
-          " "
-        }
-      }
-      */
-
-
-
     }
 
 
@@ -116,37 +106,55 @@ object main extends App {
     def drawGrid(): Unit = {
       graphics.clear()
 
-      graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, "/res/grid/background.png")
-      graphics.drawTransformedPicture(width / 2 + width / 3 , height / 2, 0.0, 1, "/res/grid/controls.png")
+      graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.activePath(10))
+
+
+
+      graphics.drawTransformedPicture(width / 2 + width / 3 , height / 2, 0.0, 1, images.activePath(9))
 
       for (row <- 0 until rows; col <- 0 until cols) {
         val x = col * sizeCell + offsetX
         val y = row * sizeCell + offsetY
 
-
-        //val displayValue = grid(row)(col).getDisplayValue()
-
-        // draw every cell's borders
-
-
-        // draw border of the cell and background when unrevealed
+        // draw background when unrevealed
 
         if (!grid(row)(col).isRevealed) {
-          if ((row + col) % 2 > 0) {
-            graphics.setColor(new Color(93,163, 113))
-            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+          if (images.hellsweeperMode){
+            if ((row + col) % 2 > 0) {
+              graphics.setColor(new Color(35,35, 50))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            } else {
+              graphics.setColor(new Color(12,12, 27))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            }
           } else {
-            graphics.setColor(new Color(48,83, 58))
-            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            if ((row + col) % 2 > 0) {
+              graphics.setColor(new Color(93,163, 113))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            } else {
+              graphics.setColor(new Color(48,83, 58))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            }
           }
+
         }
         if (grid(row)(col).isRevealed) {
-          if ((row + col) % 2 > 0) {
-            graphics.setColor(new Color(220,220,220))
-            graphics.drawFillRect(x, y, sizeCell, sizeCell)
-          } else {
-            graphics.setColor(new Color(200,200,200))
-            graphics.drawFillRect(x, y, sizeCell, sizeCell)
+          if (images.hellsweeperMode){
+            if ((row + col) % 2 > 0) {
+              graphics.setColor(new Color(120,120,120))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            } else {
+              graphics.setColor(new Color(100,100,100))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            }
+          }else{
+            if ((row + col) % 2 > 0) {
+              graphics.setColor(new Color(220,220,220))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            } else {
+              graphics.setColor(new Color(200,200,200))
+              graphics.drawFillRect(x, y, sizeCell, sizeCell)
+            }
           }
         }
 
@@ -154,69 +162,94 @@ object main extends App {
         var yImage = y + sizeCell / 2
         if (grid(row)(col).isRevealed && !grid(row)(col).isMine) {
           grid(row)(col).nbrMine match {
-            case 1 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(1))
-            case 2 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(2))
-            case 3 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(3))
-            case 4 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(4))
-            case 5 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(5))
-            case 6 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(6))
-            case 7 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(7))
-            case 8 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.GridImages(8))
+            case 1 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(1))
+            case 2 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(2))
+            case 3 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(3))
+            case 4 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(4))
+            case 5 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(5))
+            case 6 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(6))
+            case 7 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(7))
+            case 8 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(8))
             case _ =>
           }
         } else if (grid(row)(col).isFlagged){
-          graphics.drawTransformedPicture(xImage, yImage, 0.0, 1, images.GridImages(0))
+          graphics.drawTransformedPicture(xImage, yImage, 0.0, 1, images.activePath(0))
         }
 
 
         val fontSection = new Font("Arial", Font.PLAIN, 32)
 
-        graphics.drawTransformedPicture(width / 2 - width / 10, height / 2 - rows * sizeCell / 2 - sizeCell, 0.0, 1, images.GridImages(0))
+        graphics.drawTransformedPicture(width / 2 - width / 10, height / 2 - rows * sizeCell / 2 - sizeCell, 0.0, 1, images.activePath(0))
 
         if (nbrFlag >= 0) {
-          graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
-            s"${nbrFlag.toString}", fontSection, Color.BLACK, 0, 0)
+          if (images.hellsweeperMode){
+            graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
+              s"${nbrFlag.toString}", fontSection, Color.WHITE, 0, 0)
+          }else {
+            graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
+              s"${nbrFlag.toString}", fontSection, Color.BLACK, 0, 0)
+          }
+
         } else if (nbrFlag < 0){
           graphics.drawString(width / 2, height / 2 - rows * sizeCell / 2 - sizeCell,
             s"${nbrFlag.toString}", fontSection, Color.RED, 0, 0)
         }
-        //val rNbrFlag = new Rectangle(width / 2 - 100, height / 2 - rows * sizeCell / 2 - sizeCell - 30, 200, 60)
-        //graphics.drawRect(rNbrFlag)
       }
     }
 
 
-
-
     def lost(): Unit = {
+
       val font = new Font("Arial", Font.PLAIN, 56)
+      for (row <- 0 until  rows; col <- 0 until cols){
+        if (grid(row)(col).isMine){
+          val x = col * sizeCell + offsetX
+          val y = row * sizeCell + offsetY
+          var xImage = x + sizeCell / 2
+          var yImage = y + sizeCell / 2
+          graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(21))
+          Thread.sleep(50)
+          graphics.frontBuffer.synchronized{
+            drawGrid()
+          }
+        }
+      }
       var counter = 0
       while (counter != 9){
         counter += 1
         graphics.drawString(width / 2, height / 2, "LOST", font, Color.RED, 0, 0)
-        Thread.sleep(150)
+        Thread.sleep(75)
         graphics.frontBuffer.synchronized{
           drawGrid()
         }
-        Thread.sleep(150)
       }
-
+      if (images.hellsweeperMode){
+        graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.lostImage)
+        Thread.sleep(2000)
+      }
     }
 
     def win(): Unit = {
       val font = new Font("Arial", Font.PLAIN, 56)
+      for (row <- 0 until  rows; col <- 0 until cols){
+        if (!grid(row)(col).isMine && !grid(row)(col).isRevealed){
+          grid(row)(col).reveal()
+          Thread.sleep(75)
+        }
+      }
       var counter = 0
       while (counter != 9){
         counter += 1
-        graphics.drawString(width / 2, height / 2, "WIN", font, Color.green, 0, 0)
-        Thread.sleep(150)
+        graphics.drawString(width / 2, height / 2, "WIN", font, Color.GREEN, 0, 0)
+        Thread.sleep(75)
         graphics.frontBuffer.synchronized{
           drawGrid()
         }
-        Thread.sleep(150)
       }
-
-
+      if (images.hellsweeperMode){
+        graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 2, images.winImage)
+        Thread.sleep(2000)
+      }
     }
 
     def revealAdjacent(row: Int, col: Int): Unit = {
@@ -225,6 +258,7 @@ object main extends App {
 
       // reveal cell
       grid(row)(col).reveal()
+
 
       // if no mines, explore further
       if (grid(row)(col).nbrMine == 0) {
@@ -243,7 +277,7 @@ object main extends App {
         val newCol = col + j
         if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && grid(newRow)(newCol).isMine) {
           grid(newRow)(newCol).isMine = false // Delete near mines
-          println(s"mine supprimée: $row;$col")
+          println(s"mine deleted : $row;$col")
           compteur += 1
         }
       }
@@ -264,7 +298,7 @@ object main extends App {
         val col = mouseX / sizeCell
 
         // clicks IN GAME
-        if (!isMenuOpen) {
+        if (!isMenuOpen && !settingsMenu) {
           if (e.getButton == MouseEvent.BUTTON1) {
             if (row >= 0 && row < rows && col >= 0 && col < cols) {
               if (isFirstClick && !grid(row)(col).isFlagged) {
@@ -295,7 +329,6 @@ object main extends App {
                 } else {
                   revealAdjacent(row, col)
                 }
-                //drawGrid()
                 graphics.frontBuffer.synchronized()
 
               }
@@ -338,8 +371,6 @@ object main extends App {
     }
     )
 
-
-
     graphics.setKeyManager(new KeyListener {
       override def keyPressed(e: KeyEvent): Unit = {
         e.getKeyCode match {
@@ -358,23 +389,12 @@ object main extends App {
       }
 
       override def keyReleased(e: KeyEvent): Unit = {
-
       }
 
       override def keyTyped(e: KeyEvent): Unit = {
-
       }
     }
     )
-
-      isMenuOpen = true
-      graphics.frontBuffer.synchronized{
-        menu.drawMenu()
-      }
-
-      println()
-
-
 
   def startNewGame(newRows: Int, newCols: Int, newSizeCell: Int, newNbrMines: Int): Unit = {
     grid = Array.ofDim[Cell](newRows, newCols) // Array of cells
@@ -409,6 +429,13 @@ object main extends App {
       println()
     }
   }
+
+  isMenuOpen = true
+  graphics.frontBuffer.synchronized{
+    menu.drawMenu()
+  }
+  //gameSong.play()
+
 
   while (true) {
     if (!isMenuOpen) {
