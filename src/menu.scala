@@ -64,10 +64,8 @@ object menu extends App {
                 nbrMines = 13
                 buttonSound.play()
                 if (images.hellsweeperMode){
-                  graphics.frontBuffer.synchronized{
-                    graphics.clear()
-                    General.generalVoiceline()
-                  }
+                  graphics.clear()
+                  General.generalVoiceline()
                 }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
@@ -82,10 +80,8 @@ object menu extends App {
                 nbrMines = 23
                 buttonSound.play()
                 if (images.hellsweeperMode){
-                  graphics.frontBuffer.synchronized{
-                    graphics.clear()
-                    General.generalVoiceline()
-                  }
+                  graphics.clear()
+                  General.generalVoiceline()
                 }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
@@ -100,10 +96,8 @@ object menu extends App {
                 nbrMines = 40
                 buttonSound.play()
                 if (images.hellsweeperMode){
-                  graphics.frontBuffer.synchronized{
-                    graphics.clear()
-                    General.generalVoiceline()
-                  }
+                  graphics.clear()
+                  General.generalVoiceline()
                 }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
