@@ -1,4 +1,4 @@
-import javax.sound.sampled.{AudioSystem, Clip}
+import javax.sound.sampled.{AudioSystem, Clip, FloatControl}
 
 class Audio (path : String) {
   var audioClip: Clip = _

@@ -11,10 +11,13 @@ import java.awt.{Color, Font, Rectangle}
 
 object main extends App {
   // Sounds initialization
-    val gameHellmode = new Audio("/res/sounds/test.wav")
+    val gameHellmode = new Audio("/res/sounds/helldiverSong.wav")
     val gameSong = new Audio("/res/sounds/MinesweeperSong.wav")
     val buttonSound = new Audio("res/sounds/Button.wav")
+    val revealSound = new Audio("res/sounds/reveal.wav")
+    val flagSound = new Audio("res/sounds/flag.wav")
 
+  //graphics initialization
     var sizeCell = 40
     var rows = 16
     var cols = 16
@@ -34,6 +37,8 @@ object main extends App {
 
     var isMenuOpen = false
     var settingsMenu = false
+
+  //Cell's class initialization
     class Cell(var isMine: Boolean = false, var isRevealed: Boolean = false, var nbrMine: Int = 0, var isFlagged: Boolean = false) {
       def reveal(): Unit = {
         isRevealed = true
@@ -108,9 +113,9 @@ object main extends App {
 
       graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.activePath(10))
 
-
-
       graphics.drawTransformedPicture(width / 2 + width / 3 , height / 2, 0.0, 1, images.activePath(9))
+
+      graphics.drawTransformedPicture(width / 6, height / 2 + height /3, 0.0, 1.5, images.generalHelmetImage)
 
       for (row <- 0 until rows; col <- 0 until cols) {
         val x = col * sizeCell + offsetX
@@ -138,6 +143,9 @@ object main extends App {
           }
 
         }
+
+        //draw background when revealed
+
         if (grid(row)(col).isRevealed) {
           if (images.hellsweeperMode){
             if ((row + col) % 2 > 0) {
@@ -158,6 +166,8 @@ object main extends App {
           }
         }
 
+
+        //match number image to the number of cell's mines
         var xImage = x + sizeCell / 2
         var yImage = y + sizeCell / 2
         if (grid(row)(col).isRevealed && !grid(row)(col).isMine) {
@@ -172,8 +182,12 @@ object main extends App {
             case 8 => graphics.drawTransformedPicture(xImage, yImage, 0.0, sizeCell/50, images.activePath(8))
             case _ =>
           }
+          flagSound.audioClip.stop()
+          revealSound.play()
         } else if (grid(row)(col).isFlagged){
           graphics.drawTransformedPicture(xImage, yImage, 0.0, 1, images.activePath(0))
+          revealSound.audioClip.stop()
+          flagSound.play()
         }
 
 
@@ -375,6 +389,7 @@ object main extends App {
         e.getKeyCode match {
           case KeyEvent.VK_M => // 'M' key to return to menu
             isMenuOpen = true
+            settingsMenu = false
             graphics.clear()
             graphics.frontBuffer.synchronized{
               menu.drawMenu()

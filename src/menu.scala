@@ -63,6 +63,10 @@ object menu extends App {
                 sizeCell = 50
                 nbrMines = 13
                 buttonSound.play()
+                if (images.hellsweeperMode){
+                  graphics.clear()
+                  General.generalVoiceline()
+                }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
               // Medium Level
@@ -107,9 +111,14 @@ object menu extends App {
     graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.activePath(10))
     graphics.drawTransformedPicture(width/ 2, height - height /10, 0.0, 0.3, images.activePath(15))
     graphics.drawTransformedPicture(width / 2, height / 8, 0.0, 1, images.activePath(11))
-    graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.activePath(20))
+    if (images.hellsweeperMode){
+      val font = new Font("Monospaced", Font.BOLD, 25)
+      graphics.drawString(width / 2, height / 2, "It is heresy to turn your back on democracy.", font, Color.WHITE, 0, 0)
+      graphics.drawString(width / 2, height / 2 + height/ 10, "Press M key.", font, Color.WHITE, 0, 0)
+    }else{
+      graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.activePath(20))
+    }
 
-    // Flag to track if the menu is active
     // Add mouse listener for menu interactions
     graphics.addMouseListener(new MouseAdapter() {
       override def mouseClicked(e: MouseEvent): Unit = {
@@ -143,6 +152,7 @@ object menu extends App {
               graphics.frontBuffer.synchronized{
                 drawMenu()
               }
+
               gameHellmode.play()
             }
           }

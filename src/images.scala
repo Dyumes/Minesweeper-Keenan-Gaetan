@@ -1,10 +1,8 @@
-import javax.swing.ImageIcon
-import java.awt.Image
 
 
 object images {
   var hellsweeperMode: Boolean = false
-  var defaultPath : Array[String] = Array(
+  private var defaultPath : Array[String] = Array(
       "/res/grid/flag.png", //index(0)
       "/res/grid/1.png",    //..1
       "/res/grid/2.png",    //..2
@@ -30,7 +28,7 @@ object images {
 
     )
 
-    var hellsweeperPath : Array[String] = Array(
+    private var hellsweeperPath : Array[String] = Array(
       "/res/hellsweeper/grid/seflag.png",    //index(0)
       "/res/hellsweeper/grid/one.png",       //...1
       "/res/hellsweeper/grid/two.png",       //...2
@@ -57,6 +55,7 @@ object images {
 
   var activePath : Array[String] = defaultPath
 
+  // change the images path for helldiver mode
   def getImagesPath(): Unit = {
     if (hellsweeperMode){
       activePath = hellsweeperPath
@@ -68,6 +67,10 @@ object images {
 
   var lostImage = "/res/hellsweeper/grid/lost.png"
   var winImage = "/res/hellsweeper/grid/win.png"
+
+  var generalImage = "/res/hellsweeper/grid/generalmudry.png"
+  var generalHelmetImage = "/res/hellsweeper/grid/generalmudryhelmet.png"
+  var generalTextImage = "/res/hellsweeper/menus/generaltext.png"
 
 
 }
