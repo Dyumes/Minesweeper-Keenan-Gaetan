@@ -114,8 +114,10 @@ object main extends App {
       graphics.drawTransformedPicture(width / 2, height / 2, 0.0, 1, images.activePath(10))
 
       graphics.drawTransformedPicture(width / 2 + width / 3 , height / 2, 0.0, 1, images.activePath(9))
+      if (images.hellsweeperMode){
+        graphics.drawTransformedPicture(width / 6, height / 2 + height /3, 0.0, 1.5, images.generalHelmetImage)
+      }
 
-      graphics.drawTransformedPicture(width / 6, height / 2 + height /3, 0.0, 1.5, images.generalHelmetImage)
 
       for (row <- 0 until rows; col <- 0 until cols) {
         val x = col * sizeCell + offsetX

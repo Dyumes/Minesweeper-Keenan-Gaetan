@@ -64,8 +64,10 @@ object menu extends App {
                 nbrMines = 13
                 buttonSound.play()
                 if (images.hellsweeperMode){
-                  graphics.clear()
-                  General.generalVoiceline()
+                  graphics.frontBuffer.synchronized{
+                    graphics.clear()
+                    General.generalVoiceline()
+                  }
                 }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
@@ -79,6 +81,12 @@ object menu extends App {
                 sizeCell = 40
                 nbrMines = 23
                 buttonSound.play()
+                if (images.hellsweeperMode){
+                  graphics.frontBuffer.synchronized{
+                    graphics.clear()
+                    General.generalVoiceline()
+                  }
+                }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
               // Hard Level
@@ -91,6 +99,12 @@ object menu extends App {
                 sizeCell = 40
                 nbrMines = 40
                 buttonSound.play()
+                if (images.hellsweeperMode){
+                  graphics.frontBuffer.synchronized{
+                    graphics.clear()
+                    General.generalVoiceline()
+                  }
+                }
                 startNewGame(rows, cols, sizeCell, nbrMines)
               }
             }
